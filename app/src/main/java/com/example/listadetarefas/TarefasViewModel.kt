@@ -24,4 +24,10 @@ class TarefasViewModel : ViewModel() {
                 item
         }
     }
+
+    fun remover(id: Int){
+        tarefas = tarefas.filter {
+            it.id != id
+        }
+    }
 }

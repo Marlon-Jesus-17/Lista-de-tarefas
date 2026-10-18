@@ -70,15 +70,13 @@ fun TarefasScreen(
                     )
                     Text(tarefa.titulo)
 
-//                    TextButton(
-//                        onClick = {
-//                            viewModel.tarefas = viewModel.tarefas.filter {
-//                                item -> item.id != tarefa.id
-//                            }
-//                        }
-//                    ) {
-//                        Text("Remover")
-//                    }
+                    TextButton(
+                        onClick = {
+                            viewModel.remover(tarefa.id)
+                        }
+                    ) {
+                        Text("Remover")
+                    }
                 }
             }
         }
