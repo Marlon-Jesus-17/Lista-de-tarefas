@@ -24,22 +24,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import org.w3c.dom.Text
 
 @Composable
 fun TarefasScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: TarefasViewModel = viewModel()
 ){
-
-    var tarefas by rememberSaveable {
-        mutableStateOf(
-            listOf(
-                Tarefa(1, "Estudar Compose"),
-                Tarefa(2, "Fazer exercício"),
-                Tarefa(3, "Ler sobre Room")
-            )
-        )
-    }
 
     var texto by rememberSaveable { mutableStateOf("") }
 
@@ -56,13 +48,8 @@ fun TarefasScreen(
 
         Button(
             onClick = {
-                val proximoId = (tarefas.maxOfOrNull { it.id }
-                    ?: 0) + 1 //Pega o maior id da lista, se tiver vázia coloca 0
-
-                if (texto.isNotBlank()){
-                    tarefas = tarefas + Tarefa(proximoId, texto)
-                    texto = ""
-                }
+                viewModel.adicionar(texto)
+                texto = ""
             }
         ) {
             Text("Adicionar")
@@ -71,32 +58,32 @@ fun TarefasScreen(
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(tarefas, key = {it.id}){ tarefa ->
+            items(viewModel.tarefas, key = {it.id}){ tarefa ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Checkbox(
-                        checked = tarefa.concluida,
-                        onCheckedChange = {
-                            tarefas = tarefas.map { item ->
-                                if(item.id == tarefa.id)
-                                    item.copy(concluida = !item.concluida)
-                                else
-                                    item
-                            }
-                        }
-                    )
+//                    Checkbox(
+//                        checked = tarefa.concluida,
+//                        onCheckedChange = {
+//                            viewModel.tarefas = viewModel.tarefas.map { item ->
+//                                if(item.id == tarefa.id)
+//                                    item.copy(concluida = !item.concluida)
+//                                else
+//                                    item
+//                            }
+//                        }
+//                    )
                     Text(tarefa.titulo)
 
-                    TextButton(
-                        onClick = {
-                            tarefas = tarefas.filter {
-                                item -> item.id != tarefa.id
-                            }
-                        }
-                    ) {
-                        Text("Remover")
-                    }
+//                    TextButton(
+//                        onClick = {
+//                            viewModel.tarefas = viewModel.tarefas.filter {
+//                                item -> item.id != tarefa.id
+//                            }
+//                        }
+//                    ) {
+//                        Text("Remover")
+//                    }
                 }
             }
         }
