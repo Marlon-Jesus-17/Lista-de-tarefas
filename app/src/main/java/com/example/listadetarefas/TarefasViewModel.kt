@@ -15,4 +15,13 @@ class TarefasViewModel : ViewModel() {
         val proximoId = (tarefas.maxOfOrNull { it.id } ?: 0) + 1
         tarefas = tarefas + Tarefa(proximoId, titulo)
     }
+
+    fun alternarConcluida(id: Int){
+        tarefas = tarefas.map{
+            item -> if (item.id == id)
+                item.copy(concluida = !item.concluida)
+            else
+                item
+        }
+    }
 }

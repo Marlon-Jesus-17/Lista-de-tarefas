@@ -62,17 +62,12 @@ fun TarefasScreen(
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-//                    Checkbox(
-//                        checked = tarefa.concluida,
-//                        onCheckedChange = {
-//                            viewModel.tarefas = viewModel.tarefas.map { item ->
-//                                if(item.id == tarefa.id)
-//                                    item.copy(concluida = !item.concluida)
-//                                else
-//                                    item
-//                            }
-//                        }
-//                    )
+                    Checkbox(
+                        checked = tarefa.concluida,
+                        onCheckedChange = {
+                            viewModel.alternarConcluida(tarefa.id)
+                        }
+                    )
                     Text(tarefa.titulo)
 
 //                    TextButton(
