@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -22,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
@@ -31,6 +33,12 @@ fun TarefasScreen(
 ){
 
     var texto by rememberSaveable { mutableStateOf("") }
+
+    val tarefasVisiveis = when (viewModel.uiState.filtro){
+        Filtro.TODAS -> viewModel.uiState.tarefas
+        Filtro.PENDENTES -> viewModel.uiState.tarefas.filter { !it.concluida }
+        Filtro.CONCLUIDAS -> viewModel.uiState.tarefas.filter { it.concluida }
+    }
 
     Column(
         modifier = modifier.fillMaxSize().padding(16.dp)
@@ -52,10 +60,29 @@ fun TarefasScreen(
             Text("Adicionar")
         }
 
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Filtro.entries.forEach { filtro -> // Filtro.entries devolve a lista de todos os valores do enum
+
+                val texto = when(filtro){
+                    Filtro.TODAS -> "Todas"
+                    Filtro.PENDENTES -> "Pendentes"
+                    Filtro.CONCLUIDAS -> "Concluídas"
+                }
+
+                FilterChip( // FilterChip é um componente do Material 3 para filtros. Segue o padrão: selected mostra, onClick avisa
+                    selected = viewModel.uiState.filtro == filtro,
+                    onClick = {viewModel.mudarFiltro(filtro)},
+                    label = {Text(texto)}
+                )
+            }
+        }
+
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(viewModel.uiState.tarefas, key = {it.id}){ tarefa ->
+            items(tarefasVisiveis, key = {it.id}){ tarefa ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
